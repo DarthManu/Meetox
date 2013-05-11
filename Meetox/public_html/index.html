@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <html>
-
-
-
     <head>
-        <title></title>
+        <title>¡Bienvenido a Meetox!</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel='stylesheet' type='text/css' href='styles/util.css' />
-        <link rel='stylesheet' type='text/css' href='styles/style/headers.css' />
-        <link rel='stylesheet' type='text/css' href='styles/style/buttons.css' />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+        <link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
         <script type="text/javascript">
             var contacts = new mozContact();
             contacts.init({});
@@ -37,15 +34,73 @@
                 navigator.geolocation.getCurrentPosition(success, error);
                 
             }
+
+            function signup(){
+                var input = document.getElementById("inputPhone");
+                var xmlhttp = new XMLHttpRequest();
+                
+                xmlhttp.open("GET","http://meetox-developer-edition.na15.force.com/NewUser?phone=" + input.value, false);
+                xmlhttp.send();
+                
+                // Intentar guardar el token recibido
+                if(typeof(Storage)!=="undefined") {
+                    localStorage.token = xmlhttp.getResponseHeader("token");
+                    
+                    if (localStorage.token == "null") {
+                        document.getElementById("inputPhoneControl").className += " error";
+                        document.getElementById("inputPhoneHelp").innerHTML = 'Ese móvil ya está registrado';
+                    } else {
+                        window.location.href="contacts.html";
+                    }
+                }
+            }
         </script>
     </head>
 
     <body>
-        <section role="region">
-        <header><h1>Geoloc</h1></header>
-        <button id="actualiza" onClick="geoFindMe()"  >Actualiza</button>
-        <div id="out">Pulsa !</div>
-        
-    </section>
+        <div class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container" style="width: auto; padding: 0 20px;">
+                    <a class="brand" href="">Meetox</a>
+                    <ul class="nav">
+                        <li class="active"><a href="index.html">Inicio</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div span="12">
+                    <div class="row-fluid">
+                        <form class="form-horizontal">
+                            <fieldset>
+                                <legend>Registrarse</legend>
+                                <div id="inputPhoneControl" class="control-group">
+                                    <label class="control-label" for="inputPhone">Móvil</label>
+                                    <div class="controls">
+                                        <input type="text" class="input-small" maxlength="9" id="inputPhone" placeholder="655555555">
+                                        <span id="inputPhoneHelp" class="help-inline"></span>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <div class="controls">
+                                        <button class="btn btn-primary" type="button" onclick="signup()">Enviar</button>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                    <div id="token"></div>
+                </div>
+            </div>
+            <!-- GEOLOCATION
+                <button id="actualiza" onClick="geoFindMe()">Actualiza</button>
+                <div id="out">Pulsa !</div>
+            -->
+        </div>
+
+        <!-- SCRIPTS -->
+        <script src="http://code.jquery.com/jquery.js"></script>
+        <script src="bootstrap/js/bootstrap.min.js"></script>
     </body>
 </html>
