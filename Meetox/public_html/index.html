@@ -38,15 +38,15 @@
 
             function checkToken() {
                 // Intentar obtener el token
-                if(typeof(Storage)!=="undefined") {
-                    if (localStorage.token != "null") {
+                if(typeof(Storage)!==undefined) {
+                    if (localStorage.token !== null) {
                         var reqToken = new XMLHttpRequest();
                         
                         reqToken.open("GET","http://meetox-developer-edition.na15.force.com/CheckToken?token=" + localStorage.token, false);
                         reqToken.send();
 
                         var mobile = reqToken.getResponseHeader("mobile");
-                        if (mobile != "null") {
+                        if (mobile !== null) {
                             document.getElementById("alreadyLogged").innerHTML = "<div class='alert alert-info'><p>Parece que ya has iniciado sesión con el nº " + mobile + ".</p><p class='text-center'><a href='contacts.html'><strong>Ir a contactos</strong></a>.</p></div>";
                         }
                     }
@@ -64,7 +64,7 @@
                 if(typeof(Storage)!=="undefined") {
                     localStorage.token = xmlhttp.getResponseHeader("token");
                     
-                    if (localStorage.token == "null") {
+                    if (localStorage.token === null) {
                         document.getElementById("inputPhoneControl").className += " error";
                         document.getElementById("inputPhoneHelp").innerHTML = 'Ese móvil ya está registrado';
                     } else {
@@ -90,7 +90,7 @@
         <div class="container-fluid">
             <div id="alreadyLogged" class="row-fluid"></div>
             <div class="row-fluid">
-                <div span="12">
+                <div>
                     <div class="row-fluid">
                         <form class="form-horizontal">
                             <fieldset>
@@ -104,7 +104,7 @@
                                 </div>
                                 <div class="control-group">
                                     <div class="controls">
-                                        <button class="btn btn-primary" type="button" onclick="signup()">Enviar</button>
+                                        <button class="btn btn-primary" type="button" onclick="signup();">Enviar</button>
                                     </div>
                                 </div>
                             </fieldset>
