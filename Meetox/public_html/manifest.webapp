@@ -1,0 +1,16 @@
+{
+  "name": "Meetox",
+  "description": "App social para comunicar amigos cercanos geográficamente",
+  "launch_path": "index.html",
+
+  "developer": {
+    "name": "Meetox",
+    "url": "http://your-homepage-here.org"
+  },
+  "default_locale": "es",
+"permissions": {
+    "geolocation": {
+      "description": "Geolocation"
+      }
+  }
+}

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+
+
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel='stylesheet' type='text/css' href='styles/util.css' />
+        <link rel='stylesheet' type='text/css' href='styles/style/headers.css' />
+        <link rel='stylesheet' type='text/css' href='styles/style/buttons.css' />
+        <script type="text/javascript">
+            var contacts = new mozContact();
+            contacts.init({});
+            function geoFindMe() {
+                var output = document.getElementById("out");
+
+                if (!navigator.geolocation) {
+                    output.innerHTML = "<p>Geolocation is not supported by your browser</p>";
+                    return;
+                }
+
+                function success(position) {
+                    var latitude = position.coords.latitude;
+                    var longitude = position.coords.longitude;
+                    output.innerHTML = '<p>Latitude is ' + latitude + '° <br>Longitude is ' + longitude + '°</p>';
+                }
+                ;
+
+                function error() {
+                    output.innerHTML = "Unable to retrieve your location";
+                }
+                ;
+
+                output.innerHTML = "<p>Locating…</p>";
+
+                navigator.geolocation.getCurrentPosition(success, error);
+                
+                
+            }
+        </script>
+    </head>
+
+    <body>
+        <section role="region">
+        <header><h1>Geoloc</h1></header>
+        <button id="actualiza" onClick="geoFindMe()"  >Actualiza</button>
+        <div id="out">Pulsa el botón</div>
+    </section>
+    </body>
+</html>

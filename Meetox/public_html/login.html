@@ -1,0 +1,31 @@
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <link rel='stylesheet' type='text/css' href='styles/util.css' />
+        <link rel='stylesheet' type='text/css' href='styles/style/headers.css' />
+        <link rel='stylesheet' type='text/css' href='styles/style/buttons.css' />
+        <link rel='stylesheet' type='text/css' href='styles/style/inputs.css' />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script type="text/javascript">
+            function login(){
+                var input = document.getElementById("phone");
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.open("GET","http://meetox-developer-edition.na15.force.com/NewUser?phone="+input.value ,false);
+                xmlhttp.send();
+                document.getElementById("token").innerHTML=xmlhttp.getResponseHeader("token");
+            }
+        </script>
+    </head>
+    <body>
+         
+              <input type="text"
+         name="phone" size="9" id="phone">
+              <button type="button" onclick="login()"> "Registrarse"</button>
+              <div id="token">Token</div>
+    </body>
+</html>
