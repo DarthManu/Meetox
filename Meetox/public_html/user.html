@@ -24,7 +24,7 @@
 
                 if(typeof(Storage)!=="undefined") {                 
                     if (localStorage.fullname !== null) {
-                        document.getElementById("fullname").innerHTML = '<input id="inputName" type="text" class="input-block-level" placeholder="' + localStorage.fullname + '" />';
+                        document.getElementById("fullname").innerHTML = '<input id="inputName" type="text" class="input-block-level" value="' + localStorage.fullname + '" />';
                     }
                     if (localStorage.phone !== null) {
                         document.getElementById("phone").innerHTML = localStorage.phone;
@@ -43,8 +43,10 @@
 
                 var status = request.getResponseHeader("status");
                 if (status !== "null" && status == "0") {
-                    document.getElementById("result").innerHTML = "<div class='alert alert-success'><strong>¡Datos guardados!</strong></div>";
+                    document.getElementById("result").innerHTML = "<div class='alert alert-success'><strong>:) ¡Datos guardados!</strong></div>";
                     localStorage.fullname = document.getElementById("inputName").value;
+                } else {
+                    document.getElementById("result").innerHTML = "<div class='alert alert-error'><strong>:( No se pudieron guardar los datos</strong></div>";
                 }
             }
         </script>
