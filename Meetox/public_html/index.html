@@ -10,32 +10,6 @@
 
             window.onload = checkToken;
 
-            function geoFindMe() {
-                var output = document.getElementById("out");
-
-                if (!navigator.geolocation) {
-                    output.innerHTML = "<p>Geolocation is not supported by your browser</p>";
-                    return;
-                }
-
-                function success(position) {
-                    var latitude = position.coords.latitude;
-                    var longitude = position.coords.longitude;
-                    output.innerHTML = '<p>Latitude is ' + latitude + '° <br>Longitude is ' + longitude + '°</p>';
-                }
-                ;
-
-                function error() {
-                    output.innerHTML = "Unable to retrieve your location";
-                }
-                ;
-
-                output.innerHTML = "<p>Locating…</p>";
-
-                navigator.geolocation.getCurrentPosition(success, error);
-                
-            }
-
             function checkToken() {
                 // Intentar obtener el token
                 if(typeof(Storage)!==undefined) {
@@ -46,77 +20,129 @@
                         reqToken.send();
 
                         var mobile = reqToken.getResponseHeader("mobile");
-                        if (mobile !== null) {
-                            document.getElementById("alreadyLogged").innerHTML = "<div class='alert alert-info'><p>Parece que ya has iniciado sesión con el nº " + mobile + ".</p><p class='text-center'><a href='contacts.html'><strong>Ir a contactos</strong></a>.</p></div>";
+                        if (mobile !== "null") {
+                            document.getElementById("alreadyLogged").innerHTML = "<div class='alert alert-info'><strong>Nº móvil: " + mobile + "</strong></p></div>";
+                            document.getElementById("alreadyLogged").innerHTML += "<button type='button' class='btn btn-block' onclick='signin();'>Ok</button>";
+                            localStorage.phone = mobile;
+                        } else {
+                            document.getElementById("alreadyLogged").innerHTML = "<div class='alert alert-warning'><strong>Tu móvil no está registrado.</strong></p></div>";
                         }
                     }
                 }                
             }
 
             function signup(){
-                var input = document.getElementById("inputPhone");
-                var xmlhttp = new XMLHttpRequest();
+                var inputName = document.getElementById("inputName");
+                var inputPhone = document.getElementById("inputPhone");
                 
-                xmlhttp.open("GET","http://meetox-developer-edition.na15.force.com/NewUser?phone=" + input.value, false);
-                xmlhttp.send();
-                
-                // Intentar guardar el token recibido
-                if(typeof(Storage)!=="undefined") {
-                    localStorage.token = xmlhttp.getResponseHeader("token");
+                if (inputPhone.value.length == 0) {
+                    document.getElementById("inputPhoneControl").className += " error";
+                    document.getElementById("inputPhoneHelp").innerHTML = 'Debe introducir su nº de móvil.';
+                }
+                if (inputName.value.length == 0) {
+                    document.getElementById("inputNameControl").className += " error";
+                    document.getElementById("inputNameHelp").innerHTML = 'Debe introducir su nombre y apellidos.';
+                }
+                if (inputPhone.value.length != 0 && inputName.value.length != 0) {
+                    var xmlhttp = new XMLHttpRequest();
                     
-                    if (localStorage.token === null) {
-                        document.getElementById("inputPhoneControl").className += " error";
-                        document.getElementById("inputPhoneHelp").innerHTML = 'Ese móvil ya está registrado';
-                    } else {
-                        localStorage.mobile = input.value;
-                        window.location.href="contacts.html";
+                    xmlhttp.open("GET","http://meetox-developer-edition.na15.force.com/NewUser?phone=" + inputPhone.value + "&name=" + inputName.value, false);
+                    xmlhttp.send();
+                    
+                    // Intentar guardar el token recibido
+                    if(typeof(Storage)!=="undefined") {
+                        localStorage.token = xmlhttp.getResponseHeader("token");
+                        
+                        if (localStorage.token === null) {
+                            document.getElementById("inputPhoneControl").className += " error";
+                            document.getElementById("inputPhoneHelp").innerHTML = 'Ese móvil ya está registrado';
+                        } else {
+                            localStorage.phone = inputPhone.value;
+                            localStorage.fullname = inputName.value;
+                            window.location.href="contacts.html";
+                        }
                     }
                 }
             }
+
+            function signin() {
+                if (localStorage.phone !== null && localStorage.token !== null)
+                    window.location.href="contacts.html";
+            }
         </script>
+        <style>
+            .brand-title {
+                color: #FFFFFF;
+                font-family: 'Cinzel Decorative',cursive;
+                font-size: 35px;
+                font-style: italic;
+                margin: 30px 0 60px;
+                text-align: center;
+            }
+
+            .back {
+                background-image: radial-gradient(ellipse farthest-corner at center, #8CCDFF 0%, #46667F 100%);
+                padding: 20px;
+                height: 420px;
+            }
+
+            .border-round {
+                border: 2px solid #FFFFFF;
+                border-radius: 5px 5px 5px 5px;
+                box-shadow: 0 0 10px -5px #000000;
+            }
+
+            .container-bordered {
+                background: none repeat scroll 0 0 #FFFFFF;
+                border: 2px solid #6A9ABF;
+                border-radius: 5px 5px 5px 5px;
+                padding: 20px;
+            }
+
+            small {
+                font-variant: small-caps;
+            }
+        </style>
+        <link href='http://fonts.googleapis.com/css?family=Cinzel+Decorative:900' rel='stylesheet' type='text/css'>
     </head>
 
-    <body>
-        <div class="navbar navbar-fixed-top">
-            <div class="navbar-inner">
-                <div class="container" style="width: auto; padding: 0 20px;">
-                    <a class="brand" href="">Meetox</a>
-                    <ul class="nav">
-                        <li class="active"><a href="index.html">Inicio</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="container-fluid">
-            <div id="alreadyLogged" class="row-fluid"></div>
-            <div class="row-fluid">
-                <div>
+    <body style="padding: 0;">
+        <div class="container-fluid back">
+            <div class="brand-title">M<small>eetox</small></div>
+            <div class="border-round">
+                <div class="container-bordered">
                     <div class="row-fluid">
-                        <form class="form-horizontal">
-                            <fieldset>
-                                <legend>Registrarse</legend>
-                                <div id="inputPhoneControl" class="control-group">
-                                    <label class="control-label" for="inputPhone">Móvil</label>
-                                    <div class="controls">
-                                        <input type="text" class="input-small" maxlength="9" id="inputPhone" placeholder="655555555">
+                        <div class="span12">
+                            <div id="form">
+                                <p class="text-center">
+                                    <a class="btn btn-success" data-toggle="tab" href="#signin">Acceder</a>
+                                    <a class="btn btn-primary" data-toggle="tab" href="#signup">Registrarse</a>
+                                </p>
+                            </div>
+                            <div id="formContent" class="tab-content">
+                                <div id="signin" class="tab-pane fade">
+                                    <hr/>
+                                    <div id="alreadyLogged" class="row-fluid text-center"></div>
+                                    
+                                </div>
+                                <div id="signup" class="tab-pane fade">
+                                    <hr/>
+                                    <div class="control-group" id="inputNameControl">
+                                        <input type="text" class="input-block-level" id="inputName" placeholder="Nombre Apellidos">
+                                        <span id="inputNameHelp" class="help-inline"></span>
+                                    </div>
+                                    <div class="control-group" id="inputPhoneControl">
+                                        <input type="text" class="input-block-level" maxlength="9" id="inputPhone" placeholder="652325632">
                                         <span id="inputPhoneHelp" class="help-inline"></span>
                                     </div>
+                                    <button type="button" class="btn btn-block" onclick="signup();">Ok</button>
                                 </div>
-                                <div class="control-group">
-                                    <div class="controls">
-                                        <button class="btn btn-primary" type="button" onclick="signup();">Enviar</button>
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </form>
+                            </div>
+                            <div id="token"></div>
+                        </div>
                     </div>
-                    <div id="token"></div>
                 </div>
             </div>
-            <!-- GEOLOCATION
-                <button id="actualiza" onClick="geoFindMe()">Actualiza</button>
-                <div id="out">Pulsa !</div>
-            -->
         </div>
 
         <!-- SCRIPTS -->

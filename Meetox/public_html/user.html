@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Configuración | Meetox</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+        <link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
+        <script type="text/javascript">
+            window.onload = loadData;
+            
+            function loadData () {
+                function success(position) {
+                    var latitude = position.coords.latitude;
+                    var longitude = position.coords.longitude;
+                    document.getElementById("location").innerHTML = latitude + '°, ' + longitude + '°';
+                    localStorage.latitude = position.coords.latitude;
+                    localStorage.longitude = position.coords.longitude;
+                }
+
+                function error() {
+                    document.getElementById("location").innerHTML = 'No disponible.';
+                }
+
+                if(typeof(Storage)!=="undefined") {                 
+                    if (localStorage.fullname !== null) {
+                        document.getElementById("fullname").innerHTML = '<input id="inputName" type="text" class="input-block-level" placeholder="' + localStorage.fullname + '" />';
+                    }
+                    if (localStorage.phone !== null) {
+                        document.getElementById("phone").innerHTML = localStorage.phone;
+                    }
+
+                    // Get geolocation
+                    navigator.geolocation.getCurrentPosition(success, error);
+                }
+            }
+
+            function save() {
+                var request = new XMLHttpRequest();
+                
+                request.open("GET","http://meetox-developer-edition.na15.force.com/UpdateUser?token=" + localStorage.token + "&name=" + document.getElementById("inputName").value, false);
+                request.send();
+
+                var status = request.getResponseHeader("status");
+                if (status !== "null" && status == "0") {
+                    document.getElementById("result").innerHTML = "<div class='alert alert-success'><strong>¡Datos guardados!</strong></div>";
+                    localStorage.fullname = document.getElementById("inputName").value;
+                }
+            }
+        </script>
+    </head>
+
+    <body>
+        <div class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container" style="width: auto; padding: 0;">
+                    <a class="brand" href="index.html">Meetox</a>
+                    <ul class="nav">
+                        <li><a href="contacts.html">Contactos</a></li>
+                    </ul>
+                    <ul class="nav pull-right">
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-home"></i><b class="caret"></b></a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                <li><a href="user.html">Usuario</a></li>
+                                <li><a href="settings.html">Configuración</a></li>
+                            </ul>
+                        </li>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span12">
+                    <dl>
+                        <dt>Nombre</dt>
+                        <dd id="fullname"></dd>
+                        <dt>Móvil</dt>
+                        <dd id="phone"></dd>
+                        <dt>Ubicación</dt>
+                        <dd id="location"></dd>
+                    </dl>
+                    <button class="btn btn-block btn-primary" onclick="save();">Guardar</button>
+                    <br/>
+                    <div id="result"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCRIPTS -->
+        <script src="http://code.jquery.com/jquery.js"></script>
+        <script src="bootstrap/js/bootstrap.min.js"></script>
+    </body>
+</html>
